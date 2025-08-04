@@ -1,4 +1,4 @@
-n=42
+n=100
 
 WFLAGS=-Wall -Wextra -Werror -DBUFFER_SIZE=$(n) -DTFILE="testfile"
 

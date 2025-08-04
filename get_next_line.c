@@ -11,33 +11,26 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-/*static size_t count_char(char *buf)
+/*
+Clear the buff buf of size size
+*/
+static	void	buff_clear(char *buf, size_t size)
 {
-	size_t cnt;
-
-	cnt = 0;
-	while(*buf && *buf != '\n')
-	{
-		cnt++;
-		buf++;
-	}
-	return (cnt);
-}
-
-static	void	buff_clear(char *buf)
-{
-	while (*buf)
+	while (size)
 	{
 		*buf = '\0';
 		buf++;
+		size--;
 	}
-}*/
-
+}
+/*
+Return a string which its last char is '\n' terminatted with '\0'
+*/
 static	char	*get_line(char *buf, size_t s)
 {
 	char	*line;
 
+	s++;
 	line = (char *)malloc(sizeof(char) * (s + 1));
 	line[s] = '\0';
 	while(--s)
@@ -55,35 +48,61 @@ char	*get_next_line(int fd)
 	size_t		len;
 
 	len = 0;
+	buff_clear(c, sizeof(c));
 	read_bytes = read(fd, &c[len], 1);
-	while (c != '\n' && read_bytes > 0 && len < BUFFER_SIZE)
+	while (c[len] != 10 && read_bytes > 0 && len < BUFFER_SIZE)
 	{
 		len++;
 		read_bytes = read(fd, &c[len], 1);
-	}
-	
-	return (get_line(buf, len));
+	} 
+	if (len == 0)
+		return (NULL);
+	return (get_line(c, len));
 }
 
 #include <stdio.h>
 #include <fcntl.h>
-int	main()
-{
-	char	*file = "testfile";
-	int		fd = open(file, O_RDONLY);
-	char	*line;
-	int		n = 5;
 
-	if (fd > 2)
+void test_read_from_file()
+{
+	char	*line;
+	int		fdd;
+	int		fd = open("testfile", O_RDONLY);
+	int		fd2 = open("file2", O_RDONLY);
+
+	fdd = fd;
+	if (fdd > 2)
 	{
-		line = get_next_line(fd);
-		while (n)
+		line = get_next_line(fdd);
+		while (line)
 		{
 			printf("%s", line);
 			free(line);
-			line = get_next_line(fd);
-			n--;
+			line = get_next_line(fdd);
+			if (fdd == fd )
+				fdd = fd2;
+			else
+				fdd = fd;
 		}
+		close(fd2);
 		close(fd);
 	}
+}
+
+void	read_from_input()
+{
+	char	*line;
+
+	line = get_next_line(0);
+	while (line)
+	{
+		printf("%s\n", line);
+		free(line);
+		line = get_next_line(0);
+	}
+}
+
+int	main()
+{
+	read_from_input();
 }
