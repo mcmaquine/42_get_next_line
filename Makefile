@@ -1,6 +1,6 @@
-n=100
+n=5
 
-WFLAGS=-Wall -Wextra -Werror -DBUFFER_SIZE=$(n) -DTFILE="testfile"
+WFLAGS=-Wall -Wextra -Werror -DBUFFER_SIZE=$(n)
 
 COMPILER=cc
 

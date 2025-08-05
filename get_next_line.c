@@ -11,55 +11,34 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-/*
-Clear the buff buf of size size
-*/
-static	void	buff_clear(char *buf, size_t size)
-{
-	while (size)
-	{
-		*buf = '\0';
-		buf++;
-		size--;
-	}
-}
-/*
-Return a string which its last char is '\n' terminatted with '\0'
-*/
-static	char	*get_line(char *buf, size_t s)
-{
-	char	*line;
-
-	s++;
-	line = (char *)malloc(sizeof(char) * (s + 1));
-	line[s] = '\0';
-	while(--s)
-	{
-		line[s] = buf[s];
-	}
-	*line = *buf;
-	return (line);
-}
 
 char	*get_next_line(int fd)
 {
 	ssize_t		read_bytes;
 	char		c[BUFFER_SIZE];
 	size_t		len;
+	char		*line;
 
 	len = 0;
+	line = NULL;
 	buff_clear(c, sizeof(c));
 	read_bytes = read(fd, &c[len], 1);
-	while (c[len] != 10 && read_bytes > 0 && len < BUFFER_SIZE)
+	while (c[len] != 10 && read_bytes > 0)
 	{
 		len++;
+		if (len >= BUFFER_SIZE)
+		{
+			line = join(line, c, len);
+			buff_clear(c, sizeof(c));
+			len = 0;
+		}
 		read_bytes = read(fd, &c[len], 1);
-	} 
-	if (len == 0)
+	}
+	if (!line && !len)
 		return (NULL);
-	return (get_line(c, len));
+	return (join(line, c, len));
 }
-
+/*
 #include <stdio.h>
 #include <fcntl.h>
 
@@ -102,7 +81,26 @@ void	read_from_input()
 	}
 }
 
+void	read_single_file()
+{
+	char	*line;
+	int		fd = open("file2", O_RDONLY);
+
+	if (fd > 2)
+	{
+		line = get_next_line(fd);
+		while (line)
+		{
+			printf("%s", line);
+			free(line);
+			line = get_next_line(fd);
+		}
+		close(fd);
+	}
+}
+
 int	main()
 {
-	read_from_input();
+	read_single_file();
 }
+*/

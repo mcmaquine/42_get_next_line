@@ -14,5 +14,11 @@
 # define GET_NEXT_LINE_H
 # include <stdlib.h>
 # include <unistd.h>
+
+size_t	ft_strlen(const char *s);
+void	*ft_memcpy(void *dest, const void *src, size_t n);
+void	ft_bzero(void *buf, size_t n);
+char	*get_line(char *buf, size_t s);
+char	*join(char *s, char *buf, size_t t);
 char	*get_next_line(int fd);
 #endif
