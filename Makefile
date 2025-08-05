@@ -4,15 +4,24 @@ WFLAGS=-Wall -Wextra -Werror -DBUFFER_SIZE=$(n)
 
 COMPILER=cc
 
-SRC=get_next_line.c
+SRC=get_next_line.c\
+	get_next_line_utils.c
 
-a:	$(SRC)
-	$(COMPILER) $(WFLAGS) -g $< -o $@
+OBJ = $(SRC:.c=.o)
 
-all:	a
+all:	libgnl.a
+
+$(OBJ):	$(SRC)
+	$(COMPILER) $(WFLAGS) $(SRC) -g -c
+
+libgnl.a: $(OBJ)
+	ar -rcs $@ $(OBJ)
 
 clean:
 	rm -f *.o
 
 fclean: clean
-	rm -f a
+	rm -f libgnl.a
+
+main: libgnl.a main.c
+	gcc -static -g main.c $< -o $@

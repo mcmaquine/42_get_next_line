@@ -17,7 +17,7 @@ size_t	ft_strlen(const char *s)
 	size_t	len;
 
 	len = 0;
-	while (*s)
+	while (s && *s)
 	{
 		len++;
 		s++;
@@ -58,30 +58,26 @@ void	ft_bzero(void *buf, size_t n)
 /*
 Return a string which its last char is '\n' terminatted with '\0'
 */
-char	*get_line(char *buf, size_t s)
+char	*get_a_line(char *s, char *buf, size_t t)
 {
 	char	*line;
 
-	s++;
-	line = (char *)malloc(sizeof(char) * (s + 1));
-	line[s] = '\0';
-	while (--s)
-	{
-		line[s] = buf[s];
-	}
-	*line = *buf;
+	line = join(s, buf, t);
+	line = join(line, "\n", 1);
 	return (line);
 }
 
 char	*join(char *s, char *buf, size_t t)
 {
 	char	*jstr;
-	char	*str1;
+	char	*joined;
 	size_t	i;
 
 	i = 0;
-	str1 = get_line(buf, t);
 	jstr = malloc((ft_strlen(s) + t + 1) * sizeof(char));
+	if (!jstr)
+		return (NULL);
+	joined = jstr;
 	if (s)
 	{
 		jstr = ft_memcpy(jstr, s, ft_strlen(s));
@@ -89,7 +85,7 @@ char	*join(char *s, char *buf, size_t t)
 		free(s);
 	}
 	if (t)
-		jstr = ft_memcpy(&jstr[i], str1, t);
-	jstr[i] = '\0';
-	return (jstr);
+		jstr = ft_memcpy(&jstr[i], buf, t);
+	jstr[i + t] = '\0';
+	return (joined);
 }
