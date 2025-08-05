@@ -21,7 +21,7 @@ char	*get_next_line(int fd)
 
 	len = 0;
 	line = NULL;
-	buff_clear(c, sizeof(c));
+	ft_bzero(c, sizeof(c));
 	read_bytes = read(fd, &c[len], 1);
 	while (c[len] != 10 && read_bytes > 0)
 	{
@@ -29,7 +29,7 @@ char	*get_next_line(int fd)
 		if (len >= BUFFER_SIZE)
 		{
 			line = join(line, c, len);
-			buff_clear(c, sizeof(c));
+			ft_bzero(c, sizeof(c));
 			len = 0;
 		}
 		read_bytes = read(fd, &c[len], 1);

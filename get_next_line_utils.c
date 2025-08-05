@@ -89,7 +89,7 @@ char	*join(char *s, char *buf, size_t t)
 		free(s);
 	}
 	if (t)
-		jstr = ft_memcpy(&jstr[i], buf, t);
+		jstr = ft_memcpy(&jstr[i], str1, t);
 	jstr[i] = '\0';
 	return (jstr);
 }
