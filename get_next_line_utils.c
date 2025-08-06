@@ -6,7 +6,7 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 20:56:24 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/04 20:57:05 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/06 14:57:24 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,38 +42,44 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-void	ft_bzero(void *buf, size_t n)
+ssize_t	look_for_endl(char **line, char *buf, ssize_t s, char *rem)
 {
-	unsigned char	*dest;
-
-	dest = buf;
-	while (n)
+	ssize_t	i;
+	ssize_t	has_endl;
+	
+	i = -1;
+	has_endl = 0;
+	while (++i < s)
 	{
-		*dest = '\0';
-		dest++;
-		n--;
+		if (buf[i] == 10)
+		{
+			has_endl = 1;
+			break ;
+		}
 	}
+	if (has_endl)
+	{
+		*line = join(*line, buf, s);
+		ft_bzero(rem, s);
+		ft_memcpy(rem, &buf[i + 1], s - i - 1);
+	}
+	else
+	{
+		*line = join(*line, buf, s);
+		ft_bzero(rem, s);
+	}
+	return (has_endl);
 }
 
-/*
-Return a string which its last char is '\n' terminatted with '\0'
-*/
-char	*get_a_line(char *s, char *buf, size_t t)
-{
-	char	*line;
-
-	line = join(s, buf, t);
-	line = join(line, "\n", 1);
-	return (line);
-}
-
-char	*join(char *s, char *buf, size_t t)
+char	*join(char *s, char *buf, ssize_t t)
 {
 	char	*jstr;
 	char	*joined;
 	size_t	i;
 
 	i = 0;
+	if (!s && !t)
+		return (NULL);
 	jstr = malloc((ft_strlen(s) + t + 1) * sizeof(char));
 	if (!jstr)
 		return (NULL);
@@ -89,3 +95,18 @@ char	*join(char *s, char *buf, size_t t)
 	jstr[i + t] = '\0';
 	return (joined);
 }
+
+void	*ft_bzero(void *s, size_t n)
+{ 
+	unsigned char	*dest;
+
+	dest = s;
+	while (n > 0)
+	{
+		*dest = '\0';
+		n--;
+		dest++;
+	}
+	return (s);
+}
+

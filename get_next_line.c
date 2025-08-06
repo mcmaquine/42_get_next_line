@@ -6,7 +6,7 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:47:05 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/01 14:20:26 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/06 14:12:35 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,23 @@
 char	*get_next_line(int fd)
 {
 	ssize_t		read_bytes;
-	char		c[BUFFER_SIZE];
-	size_t		len;
+	char		buf[BUFFER_SIZE];
+	static char	remainder[BUFFER_SIZE];
 	char		*line;
+	ssize_t		end;
 
-	len = 0;
 	line = NULL;
-	ft_bzero(c, sizeof(c));
-	read_bytes = read(fd, &c[len], 1);
-	while (c[len] != 10 && read_bytes > 0)
+	end = 0;
+	read_bytes = read(fd, buf, BUFFER_SIZE);
+	line = join(line, remainder, ft_strlen(remainder));
+	while (read_bytes > 0)
 	{
-		len++;
-		if (len >= BUFFER_SIZE)
-		{
-			line = join(line, c, len);
-			ft_bzero(c, sizeof(c));
-			len = 0;
-		}
-		read_bytes = read(fd, &c[len], 1);
+		end = look_for_endl(&line, buf, read_bytes, remainder);
+		if (end)
+			break ;
+		read_bytes = read(fd, buf, BUFFER_SIZE);
 	}
-	if (!line && !len)
+	if (!line && !read_bytes)
 		return (NULL);
-	return (get_a_line(line, c, len));
+	return (line);
 }

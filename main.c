@@ -6,7 +6,7 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 10:32:22 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/05 10:35:00 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/06 13:32:55 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	read_single_file()
 	}
 }
 
-int	main(void)
+void	read_unfinished_line(void)
 {
 	int	fd =  open("file1", O_RDONLY);
 	char	*line;
@@ -87,4 +87,9 @@ int	main(void)
 		}
 		close(fd);
 	}
+}
+
+int	main(void)
+{
+	read_single_file();
 }
