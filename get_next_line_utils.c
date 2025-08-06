@@ -6,7 +6,7 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 20:56:24 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/06 14:57:24 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/06 16:11:26 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ ssize_t	look_for_endl(char **line, char *buf, ssize_t s, char *rem)
 	}
 	if (has_endl)
 	{
-		*line = join(*line, buf, s);
+		*line = join(*line, buf, i + 1);
 		ft_bzero(rem, s);
 		ft_memcpy(rem, &buf[i + 1], s - i - 1);
 	}
