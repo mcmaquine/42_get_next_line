@@ -1,4 +1,4 @@
-n=5
+n=1000
 
 WFLAGS=-Wall -Wextra -Werror -DBUFFER_SIZE=$(n)
 
@@ -22,6 +22,7 @@ clean:
 
 fclean: clean
 	rm -f libgnl.a
+	rm -f main
 
 main: libgnl.a main.c
 	gcc -static -g main.c $< -o $@

@@ -6,7 +6,7 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 20:56:24 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/06 16:11:26 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/07 17:35:33 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,79 +25,36 @@ size_t	ft_strlen(const char *s)
 	return (len);
 }
 
-void	*ft_memcpy(void *dest, const void *src, size_t n)
-{
-	size_t			i;
-	unsigned char	*cdest;
-	unsigned char	*tsrc;
-
-	cdest = (unsigned char *)dest;
-	tsrc = (unsigned char *)src;
-	i = 0;
-	while (i < n)
-	{
-		cdest[i] = tsrc[i];
-		i++;
-	}
-	return (dest);
-}
-
-ssize_t	look_for_endl(char **line, char *buf, ssize_t s, char *rem)
-{
-	ssize_t	i;
-	ssize_t	has_endl;
-	
-	i = -1;
-	has_endl = 0;
-	while (++i < s)
-	{
-		if (buf[i] == 10)
-		{
-			has_endl = 1;
-			break ;
-		}
-	}
-	if (has_endl)
-	{
-		*line = join(*line, buf, i + 1);
-		ft_bzero(rem, s);
-		ft_memcpy(rem, &buf[i + 1], s - i - 1);
-	}
-	else
-	{
-		*line = join(*line, buf, s);
-		ft_bzero(rem, s);
-	}
-	return (has_endl);
-}
-
 char	*join(char *s, char *buf, ssize_t t)
 {
 	char	*jstr;
-	char	*joined;
 	size_t	i;
+	size_t 	len_s;
 
-	i = 0;
 	if (!s && !t)
 		return (NULL);
-	jstr = malloc((ft_strlen(s) + t + 1) * sizeof(char));
+	i = 0;
+	len_s = ft_strlen(s);
+	jstr = malloc((i + t + 1) * sizeof(char));
 	if (!jstr)
 		return (NULL);
-	joined = jstr;
+	while(i < len_s)
+		jstr[i] = s[i++];
 	if (s)
-	{
-		jstr = ft_memcpy(jstr, s, ft_strlen(s));
-		i = ft_strlen(s);
 		free(s);
+	while (t)
+	{
+		jstr[i] = *buf;
+		t--;
+		buf++;
+		i++;
 	}
-	if (t)
-		jstr = ft_memcpy(&jstr[i], buf, t);
-	jstr[i + t] = '\0';
-	return (joined);
+	jstr[i] = '\0';
+	return (jstr);
 }
 
 void	*ft_bzero(void *s, size_t n)
-{ 
+{
 	unsigned char	*dest;
 
 	dest = s;
@@ -110,3 +67,21 @@ void	*ft_bzero(void *s, size_t n)
 	return (s);
 }
 
+void	*ft_memcpy(void *dest, const void *src, size_t n)
+{
+	unsigned char	*tsrc;
+	unsigned char	*tdest;
+
+	if (!dest || !src)
+		return (dest);
+	tdest = dest;
+	tsrc = (unsigned char*)src;
+	while (n)
+	{
+		*tdest = *tsrc;
+		tdest++;
+		tsrc++;
+		n--;
+	}
+	return (dest);
+}
