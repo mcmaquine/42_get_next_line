@@ -14,13 +14,31 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-void test_read_from_file()
+void	test_fd(int fd)
+{
+	char	*line;
+
+	if (fd > 2)
+	{
+		line = get_next_line(fd);
+		while (line)
+		{
+			printf("%s", line);
+			free(line);
+			line = get_next_line(fd);
+		}
+		close(fd);
+	}
+}
+void	test_read_from_file(void)
 {
 	char	*line;
 	int		fdd;
-	int		fd = open("testfile", O_RDONLY);
-	int		fd2 = open("file2", O_RDONLY);
+	int		fd2;
+	int		fd;
 
+	fd = open("testfile", O_RDONLY);
+	fd2 = open("file2", O_RDONLY);
 	fdd = fd;
 	if (fdd > 2)
 	{
@@ -30,7 +48,7 @@ void test_read_from_file()
 			printf("%s", line);
 			free(line);
 			line = get_next_line(fdd);
-			if (fdd == fd )
+			if (fdd == fd)
 				fdd = fd2;
 			else
 				fdd = fd;
@@ -40,7 +58,7 @@ void test_read_from_file()
 	}
 }
 
-void	read_from_input()
+void	read_from_input(void)
 {
 	char	*line;
 
@@ -53,43 +71,49 @@ void	read_from_input()
 	}
 }
 
-void	read_single_file()
+void	read_single_file(void)
 {
-	char	*line;
-	int		fd = open("file2", O_RDONLY);
+	int		fd;
 
-	if (fd > 2)
-	{
-		line = get_next_line(fd);
-		while (line)
-		{
-			printf("%s", line);
-			free(line);
-			line = get_next_line(fd);
-		}
-		close(fd);
-	}
+	fd = open("file2", O_RDONLY);
+	test_fd(fd);
 }
 
 void	read_unfinished_line(void)
 {
-	int	fd =  open("file1", O_RDONLY);
+	int		fd;
+
+	fd = open("file1", O_RDONLY);
+	test_fd(fd);
+}
+
+void	onechar(void)
+{
+	int		fd;
+
+	fd = open("onechar.txt", O_RDONLY);
+	test_fd(fd);
+}
+
+void	only_nl(void)
+{
+	int		fd;
 	char	*line;
 
-	if (fd > 2)
-	{
-		line = get_next_line(fd);
-		while (line)
-		{
-			printf("%s", line);
-			free(line);
-			line = get_next_line(fd);
-		}
-		close(fd);
-	}
+	fd = open("only_nl.txt", O_RDONLY);
+	test_fd(fd);
+}
+
+void	_41_with_nl(void)
+{
+	int		fd;
+	char	*line;
+
+	fd = open("41_with_nl", O_RDONLY);
+	test_fd(fd);
 }
 
 int	main(void)
 {
-	read_single_file();
+	only_nl();
 }
