@@ -1,4 +1,4 @@
-n=42
+n=10
 
 WFLAGS=-Wall -Wextra -Werror -DBUFFER_SIZE=$(n)
 

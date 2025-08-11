@@ -6,13 +6,13 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 20:56:24 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/07 17:35:33 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/11 12:33:59 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen(char *s)
 {
 	size_t	len;
 

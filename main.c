@@ -6,7 +6,7 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 10:32:22 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/07 10:22:49 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/11 15:06:30 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,38 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-void	test_fd(int fd)
+void	test_fd(char *file)
 {
 	char	*line;
+	int		fd;
+	int		line_read;
 
-	if (fd > 2)
+	line_read = 0;
+	fd = open(file, O_RDONLY);
+ 	if (fd > 2)
 	{
 		line = get_next_line(fd);
 		while (line)
 		{
+			line_read++;
 			printf("%s", line);
 			free(line);
 			line = get_next_line(fd);
 		}
 		close(fd);
+		printf("\n Total line read: %d\n", line_read);
 	}
 }
-void	test_read_from_file(void)
+
+void	test_2_files(char **files)
 {
 	char	*line;
 	int		fdd;
 	int		fd2;
 	int		fd;
 
-	fd = open("testfile", O_RDONLY);
-	fd2 = open("file2", O_RDONLY);
+	fd = open(files[1], O_RDONLY);
+	fd2 = open(files[2], O_RDONLY);
 	fdd = fd;
 	if (fdd > 2)
 	{
@@ -58,62 +65,12 @@ void	test_read_from_file(void)
 	}
 }
 
-void	read_from_input(void)
+int	main(int argc, char **argv)
 {
-	char	*line;
-
-	line = get_next_line(0);
-	while (line)
-	{
-		printf("%s\n", line);
-		free(line);
-		line = get_next_line(0);
-	}
-}
-
-void	read_single_file(void)
-{
-	int		fd;
-
-	fd = open("file2", O_RDONLY);
-	test_fd(fd);
-}
-
-void	read_unfinished_line(void)
-{
-	int		fd;
-
-	fd = open("file1", O_RDONLY);
-	test_fd(fd);
-}
-
-void	onechar(void)
-{
-	int		fd;
-
-	fd = open("onechar.txt", O_RDONLY);
-	test_fd(fd);
-}
-
-void	only_nl(void)
-{
-	int		fd;
-	char	*line;
-
-	fd = open("only_nl.txt", O_RDONLY);
-	test_fd(fd);
-}
-
-void	_41_with_nl(void)
-{
-	int		fd;
-	char	*line;
-
-	fd = open("41_with_nl", O_RDONLY);
-	test_fd(fd);
-}
-
-int	main(void)
-{
-	only_nl();
+	if (argc == 2)
+		test_fd(argv[1]);
+	else if (argc == 3)
+		test_2_files(argv);
+	else
+		printf("File(s) name(s) missing as parameter\n");
 }

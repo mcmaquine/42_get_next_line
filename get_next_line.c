@@ -6,48 +6,50 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:47:05 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/07 17:53:49 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/11 15:28:59 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static size_t	seek_for_endl(char *line, char *rem)
+static size_t	seek_for_endl(char *buf, size_t len, char *rem)
 {
 	size_t	i;
 	size_t	has_endl;
-	size_t	len;
 
 	i = 0;
 	has_endl = 0;
-	len = ft_strlen(line);
-	while (line[i])
+	while (i < len)
 	{
-		if (line[i] == 10)
+		if (buf[i] == 10)
 		{
 			has_endl = 1;
 			break ;
 		}
 		i++;
 	}
+	ft_bzero(rem, BUFFER_SIZE);
 	if (has_endl)
-	{
-		ft_bzero(rem, ft_strlen(rem));
-		ft_memcpy(rem, &line[i + 1], len - i - 1);
-	}
+		ft_memcpy(rem, &buf[i + 1], len - i - 1);
 	if (has_endl)
 		return (i + 1);
 	else
 		return (has_endl);
 }
 
-static void	check_no_read_byte(ssize_t *rb, char *buf, char *rem)
+/*
+If there is any char in remainder copy them to buf, otherwise read from file*/
+static ssize_t	get_bytes(int fd, char *buf, char *rmder)
 {
-	if (!(*rb))
-	{
-		*rb = ft_strlen(rem);
-		ft_memcpy(buf, rem, *rb);
-	}
+	ssize_t	lrem;
+
+	ft_bzero(buf, BUFFER_SIZE);
+	lrem = ft_strlen(rmder);
+	if (lrem)
+		ft_memcpy(buf, rmder, lrem);
+	else
+		lrem = read(fd, buf, BUFFER_SIZE);
+	return (lrem);
 }
 
 char	*get_next_line(int fd)
@@ -59,15 +61,12 @@ char	*get_next_line(int fd)
 	ssize_t		end;
 
 	line = NULL;
-	ft_bzero(buf, BUFFER_SIZE);
 	if (fd < 0)
 		return (NULL);
-	read_bytes = read(fd, buf, BUFFER_SIZE);
-	check_no_read_byte(&read_bytes, buf, remainder);
+	read_bytes = get_bytes(fd, buf, remainder);
 	while (read_bytes > 0)
 	{
-		line = join(line, remainder, ft_strlen(remainder));
-		end = seek_for_endl(buf, remainder);
+		end = seek_for_endl(buf, read_bytes, remainder);
 		if (end)
 		{
 			line = join(line, buf, end);
