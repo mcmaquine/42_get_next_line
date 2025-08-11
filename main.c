@@ -12,12 +12,48 @@
 
 #include <stdio.h>
 #include <fcntl.h>
-#include "get_next_line.c"
+#include "get_next_line.h"
 
-int	main()
+void test_read_from_file()
 {
-	int	fd = open(TFILE, O_RDONLY);
+	char	*line;
+	int		fdd;
+	int		fd = open("testfile", O_RDONLY);
+	int		fd2 = open("file2", O_RDONLY);
 
-	if (fd > 0)
+	fdd = fd;
+	if (fdd > 2)
+	{
+		line = get_next_line(fdd);
+		while (line)
+		{
+			printf("%s", line);
+			free(line);
+			line = get_next_line(fdd);
+			if (fdd == fd )
+				fdd = fd2;
+			else
+				fdd = fd;
+		}
+		close(fd2);
 		close(fd);
+	}
+}
+
+void	read_from_input()
+{
+	char	*line;
+
+	line = get_next_line(0);
+	while (line)
+	{
+		printf("%s\n", line);
+		free(line);
+		line = get_next_line(0);
+	}
+}
+
+int	main(int argc, char **argv)
+{
+	read_from_input();
 }

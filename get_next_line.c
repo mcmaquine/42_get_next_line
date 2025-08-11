@@ -23,86 +23,47 @@ static	void	buff_clear(char *buf, size_t size)
 		size--;
 	}
 }
+
+static char	*update_bucket(char *buf, char *bt, size_t pos)
+{
+	
+}
 /*
 Return a string which its last char is '\n' terminatted with '\0'
 */
-static	char	*get_line(char *buf, size_t s)
+static char	*get_a_line(int fd, char *bucket)
 {
-	char	*line;
+	char		*line;
+	char		*buf;
+	ssize_t		byte_reads;
+	size_t		pos_nl;
 
-	s++;
-	line = (char *)malloc(sizeof(char) * (s + 1));
-	line[s] = '\0';
-	while(--s)
+	line = NULL;
+	buf = (char *)malloc(BUFFER_SIZE * sizeof(char));
+	if (!buf)
+		return (NULL);
+	pos_nl = has_nl(bucket, ft_strlen(bucket));
+	if (pos_nl)
+		return (update_bucket(buf, bucket, pos_nl));
+	byte_reads = read(fd, buf, BUFFER_SIZE);
+	while (byte_reads > 0)
 	{
-		line[s] = buf[s];
+		pos_nl = has_nl(buf, byte_reads);
+		if (pos_nl)
+		{
+			line = update_bucket(buf, bucket, pos_nl);
+			break ;
+		}
+		join(line, buf, byte_reads);
+		byte_reads = read(fd, buf, BUFFER_SIZE);
 	}
-	*line = *buf;
 	return (line);
 }
 
 char	*get_next_line(int fd)
 {
-	ssize_t		read_bytes;
-	char		c[BUFFER_SIZE];
-	size_t		len;
+	static char	*bucket;
+	char		*line;
 
-	len = 0;
-	buff_clear(c, sizeof(c));
-	read_bytes = read(fd, &c[len], 1);
-	while (c[len] != 10 && read_bytes > 0 && len < BUFFER_SIZE)
-	{
-		len++;
-		read_bytes = read(fd, &c[len], 1);
-	} 
-	if (len == 0)
-		return (NULL);
-	return (get_line(c, len));
-}
-
-#include <stdio.h>
-#include <fcntl.h>
-
-void test_read_from_file()
-{
-	char	*line;
-	int		fdd;
-	int		fd = open("testfile", O_RDONLY);
-	int		fd2 = open("file2", O_RDONLY);
-
-	fdd = fd;
-	if (fdd > 2)
-	{
-		line = get_next_line(fdd);
-		while (line)
-		{
-			printf("%s", line);
-			free(line);
-			line = get_next_line(fdd);
-			if (fdd == fd )
-				fdd = fd2;
-			else
-				fdd = fd;
-		}
-		close(fd2);
-		close(fd);
-	}
-}
-
-void	read_from_input()
-{
-	char	*line;
-
-	line = get_next_line(0);
-	while (line)
-	{
-		printf("%s\n", line);
-		free(line);
-		line = get_next_line(0);
-	}
-}
-
-int	main()
-{
-	read_from_input();
+	line = get_a_line(fd, bucket);
 }
