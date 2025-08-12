@@ -1,18 +1,18 @@
 n=100
 
-WFLAGS=-Wall -Wextra -Werror -DBUFFER_SIZE=$(n) -DTFILE="testfile"
+WFLAGS=-Wall -Wextra -Werror -DBUFFER_SIZE=$(n)
 
 COMPILER=cc
 
-SRC=get_next_line.c
+SRC=get_next_line.c get_next_line_utils.c main.c
 
-a:	$(SRC)
+main:	$(SRC)
 	$(COMPILER) $(WFLAGS) -g $< -o $@
 
-all:	a
+all:	main
 
 clean:
 	rm -f *.o
 
 fclean: clean
-	rm -f a
+	rm -f main
