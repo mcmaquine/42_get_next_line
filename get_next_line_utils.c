@@ -6,7 +6,7 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 19:51:53 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/12 11:38:24 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/12 17:38:54 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ size_t	ft_strlen(const char *s)
 	size_t	len;
 
 	len = 0;
-	while (!s && s[len])
+	while (s && s[len])
 		len++;
 	return (len);
 }
@@ -29,9 +29,11 @@ Return the position to the matched character or -1 if the character is not found
 */
 ssize_t	ft_strpchr(const char *s, size_t len, char c)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
+	if (!s)
+		return (-1);
 	while (i <= len)
 	{
 		if (s[i] == c)
@@ -89,4 +91,24 @@ void	*ft_memcpy(char *dest, const char *src, size_t n)
 		i++;
 	}
 	return (dest);
+}
+
+/*
+The function returns a pointer to a new string which is a duplicate of the
+string s. Memory for the new string is obtained with malloc(3), and can be freed
+with free(3). On success, the ft_strdup() function returns a pointer to the
+duplicated string. It returns NULL if insufficient memory was available.
+*/
+char	*ft_strdup(const char *s)
+{
+	size_t	slen;
+	char	*dup;
+
+	slen = ft_strlen(s);
+	dup = (char *)malloc((slen + 1) * sizeof(char));
+	if (!dup)
+		return (NULL);
+	dup = (char *)ft_memcpy(dup, s, slen);
+	dup[slen] = '\0';
+	return (dup);
 }

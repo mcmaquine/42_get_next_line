@@ -1,13 +1,17 @@
-n=100
+n=1
 
 WFLAGS=-Wall -Wextra -Werror -DBUFFER_SIZE=$(n)
 
 COMPILER=cc
 
-SRC=get_next_line.c get_next_line_utils.c main.c
+SRC=get_next_line_utils.c get_next_line.c main.c
+OBJ=$(SRC:.c=.o)
 
-main:	$(SRC)
-	$(COMPILER) $(WFLAGS) -g $< -o $@
+$(OBJ):	$(SRC)
+	$(COMPILER) $(WFLAGS) -g -c $(SRC)
+
+main:	$(OBJ)
+	$(COMPILER) $(OBJ) -o $@
 
 all:	main
 
