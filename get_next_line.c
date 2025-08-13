@@ -6,53 +6,57 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:47:05 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/12 18:01:52 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/13 15:58:24 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*join(char **btk, char *buf, ssize_t bsize)
+static char	*join(char *bucket, char *buf)
 {
-	size_t	lbtk;
-	char	*joined;
-
-	lbtk = ft_strlen(*btk);
-	joined = (char *)malloc((lbtk + bsize + 1) * sizeof(char));
-	if (!joined)
-		return (NULL);
-	if (btk)
-		ft_memcpy(joined, *btk, lbtk);
-	if (bsize > 0)
-		ft_memcpy(&joined[lbtk], buf, bsize);
-	joined[lbtk + bsize] = '\0';
-	free(*btk);
-	*btk = NULL;
-	return (joined);
+	char	*jn;
+	
+	jn = ft_strjoin(bucket, buf);
+	free(jn);
 }
 
-static char	*update_bucket(char *buf, ssize_t byte_read, char **btk)
+static void	*ft_calloc(size_t nmemb, size_t size)
 {
-	char	*line;
-	char	*new_btk;
-	ssize_t	pos;
+	void	*pointer;
 
-	new_btk = join(btk, buf, byte_read);
-	pos = ft_strpchr(new_btk, ft_strlen(new_btk), 10);
-	if (pos == -1)
-	{
-		line = ft_strdup(new_btk);
-		if (!ft_strlen(line))
-			line = NULL;
-		free(new_btk);
+	if (!nmemb || !size)
+		return (NULL);
+	pointer = malloc(nmemb * size);
+	ft_bzero(pointer, nmemb * size);
+	return (pointer);
+}
+
+static char	*update_bucket(int fd, char *bucket)
+{
+	char		*line;
+	char		*buf;
+	ssize_t		bytes_read;
+
+	buf = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	if (!buf)
+		return (NULL);
+	if (!bucket)
+		bucket = (char *)ft_calloc(1, sizeof(char));
+	bytes_read = read(fd, buf, BUFFER_SIZE);
+	while (bytes_read > 0)
+	{		
+		bucket = join(bucket, buf);
+		if (ft_strpchr(buf, bytes_read, 10) >= 0)
+			break ;
+		bytes_read = read(fd, buf, BUFFER_SIZE);
 	}
-	else
+	if (bytes_read == -1)
 	{
-		line = ft_substr(new_btk, 0, pos + 1);
-		*btk = ft_substr(new_btk, pos + 1, ft_strlen(new_btk) - pos);
+		free(buf);
+		free(bucket);
+		return (NULL);
 	}
-	if (!ft_strlen(*btk) && *btk)
-		free(btk);
+	free(buf);
 	return (line);
 }
 
@@ -61,27 +65,47 @@ Return a string which its last char is '\n' terminatted with '\0'
 */
 static char	*get_a_line(int fd, char **bucket)
 {
-	char		*line;
-	char		*buf;
-	ssize_t		byte_reads;
+	char	*line;
+	char	*new_btk;
+	ssize_t	pos;
 
-	line = NULL;
-	buf = (char *)malloc(BUFFER_SIZE * sizeof(char));
-	if (!buf)
-		return (NULL);
-	byte_reads = read(fd, buf, BUFFER_SIZE);
-	while (byte_reads > 0)
+	pos = ft_strpchr(*btk, ft_strlen(*btk), 10);
+	if (pos == -1)
 	{
-		if (ft_strpchr(buf, byte_reads, 10) >= 0)
+		line = ft_strdup(*b/*
+The function returns a pointer to a new string which is a duplicate of the
+string s. Memory for the new string is obtained with malloc(3), and can be freed
+with free(3). On success, the ft_strdup() function returns a pointer to the
+duplicated string. It returns NULL if insufficient memory was available.
+*/
+char	*ft_strdup(const char *s)
+{
+	size_t	slen;
+	char	*dup;
+
+	slen = ft_strlen(s);
+	if (!slen)
+		return (NULL);
+	dup = (char *)malloc((slen + 1) * sizeof(char));
+	if (!dup)
+		return (NULL);
+	dup = (char *)ft_memcpy(dup, s, slen);
+	dup[slen] = '\0';
+	return (dup);
+}tk);
+		if (line)
 		{
-			line = update_bucket(buf, byte_reads, bucket);
-			break ;
+			free(*btk);
+			*btk = NULL;
 		}
-		*bucket = join(bucket, buf, byte_reads);
-		byte_reads = read(fd, buf, BUFFER_SIZE);
 	}
-	line = update_bucket(NULL, 0, bucket);
-	free(buf);
+	else
+	{
+		line = ft_substr(*btk, 0, pos + 1);
+		new_btk = ft_substr(*btk, pos + 1, ft_strlen(*btk) - (pos + 1));
+		free(*btk);
+		*btk = new_btk;
+	}
 	return (line);
 }
 
@@ -89,13 +113,9 @@ char	*get_next_line(int fd)
 {
 	static char	*bucket;
 	char		*line;
-	ssize_t		pnl;
 
 	if (fd < 0)
 		return (NULL);
-	pnl = ft_strpchr(bucket, ft_strlen(bucket), 10);
-	if (pnl >= 0)
-		return (update_bucket(NULL, 0, &bucket));
-	line = get_a_line(fd, &bucket);
+	bucket = update_bucket(fd, bucket);
 	return (line);
 }

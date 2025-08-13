@@ -6,7 +6,7 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 19:51:53 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/12 17:38:54 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/13 15:56:04 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,24 +23,25 @@ size_t	ft_strlen(const char *s)
 }
 
 /*
-The function returns the psoiton to the first occurence of the character c in 
-the string s.
-Return the position to the matched character or -1 if the character is not found
+The function returns a pointer to the first occurence of the character c in the
+string s.
+Return a pointer to the matched character or NULL if the character is not found
 */
-ssize_t	ft_strpchr(const char *s, size_t len, char c)
+char	*ft_strchr(const char *s, int c)
 {
-	size_t	i;
+	char	*str;
 
-	i = 0;
-	if (!s)
-		return (-1);
-	while (i <= len)
+	str = (char *)s;
+	while (*str)
 	{
-		if (s[i] == c)
-			return (i);
-		i++;
+		if (*str == (char)c)
+			return (str);
+		str++;
 	}
-	return (-1);
+	if (str == (char)c)
+		return (str);
+	else
+		return (NULL);
 }
 
 /*
@@ -53,7 +54,7 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 	size_t	st;
 	char	*sub;
 
-	if (!s)
+	if (!s || !len)
 		return (NULL);
 	if (start > ft_strlen(s))
 		return (malloc(sizeof(char)));
@@ -74,41 +75,39 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 	return (sub);
 }
 
-/*
-The function copies n bytes from memory area src to memory area dest. The memory
-area must not overlap.
-*/
-void	*ft_memcpy(char *dest, const char *src, size_t n)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	size_t	i;
+	char	*joined;
+	char	*str1;
+	char	*str2;
 
-	i = 0;
-	if (dest == NULL || src == NULL)
-		return (dest);
-	while (i < n)
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	return (dest);
+	str1 = (char *)s1;
+	str2 = (char *)s2;
+	if (!s1 || !s2)
+		return (NULL);
+	joined = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	if (!joined)
+		return (NULL);
+	if (*str1)
+		*joined++ = *str1++;
+	if (*str2)
+		*joined++ = *str2++;
+	*joined = '\0';
+	return (joined);
 }
 
 /*
-The function returns a pointer to a new string which is a duplicate of the
-string s. Memory for the new string is obtained with malloc(3), and can be freed
-with free(3). On success, the ft_strdup() function returns a pointer to the
-duplicated string. It returns NULL if insufficient memory was available.
+The function erases the data in the n bytes of the memory starting at the
+location pointed to by s, by writing zeros (bytes containing '\0') to that area
 */
-char	*ft_strdup(const char *s)
+void	*ft_bzero(void *s, size_t n)
 {
-	size_t	slen;
-	char	*dup;
+	unsigned char	*c;
 
-	slen = ft_strlen(s);
-	dup = (char *)malloc((slen + 1) * sizeof(char));
-	if (!dup)
-		return (NULL);
-	dup = (char *)ft_memcpy(dup, s, slen);
-	dup[slen] = '\0';
-	return (dup);
+	c = s;
+	while (n)
+	{
+		*c++ = '\0';
+		n--;
+	}
 }
