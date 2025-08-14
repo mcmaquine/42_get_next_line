@@ -18,7 +18,7 @@
 char	*ft_strdup(const char *s);
 size_t	ft_strlen(const char *s);
 char	*ft_strjoin(char const *s1, char const *s2);
-ssize_t	ft_strpchr(const char *s, size_t len, char c);
+char	*ft_strchr(const char *s, int c);
 void	*ft_bzero(void *s, size_t n);
 char	*get_next_line(int fd);
 #endif
