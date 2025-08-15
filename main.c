@@ -6,7 +6,7 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 13:57:30 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/13 10:29:22 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/15 11:42:22 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,5 +63,5 @@ int	main(int argc, char **argv)
 		two_files(argv);
 	else
 		printf("Must have one or two parameters\n");
-	return (EXIT_SUCCESS);
+	//return (EXIT_SUCCESS);
 }

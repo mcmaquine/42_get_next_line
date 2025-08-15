@@ -6,7 +6,7 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 19:51:53 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/13 15:56:04 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/15 12:58:57 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,25 +75,27 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 	return (sub);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(const char *s1, const char *s2)
 {
 	char	*joined;
 	char	*str1;
 	char	*str2;
+	char	*start;
 
 	str1 = (char *)s1;
 	str2 = (char *)s2;
 	if (!s1 || !s2)
 		return (NULL);
-	joined = (char *)malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	joined = (char *)malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
 	if (!joined)
 		return (NULL);
-	if (*str1)
+	start = joined;
+	while (*str1)
 		*joined++ = *str1++;
-	if (*str2)
+	while (*str2)
 		*joined++ = *str2++;
 	*joined = '\0';
-	return (joined);
+	return (start);
 }
 
 /*

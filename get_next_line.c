@@ -6,13 +6,13 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:47:05 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/13 15:58:24 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/15 14:18:17 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*join(char *bucket, char *buf)
+char	*join(char *bucket, char *buf)
 {
 	char	*jn;
 
@@ -21,8 +21,33 @@ static char	*join(char *bucket, char *buf)
 	return (jn);
 }
 
-static char	*update_bucket(char *bucket)
+char	*update_bucket(char *bucket)
 {
+	int		i;
+	int		j;
+	char	*str;
+
+	i = 0;
+	j = 0;
+	while (bucket[i] && bucket[i] != '\n')
+		i++;
+	if (!bucket[i])
+	{
+		free (bucket);
+		return (NULL);
+	}
+	str = ft_calloc((ft_strlen(bucket) - i + 1), sizeof(*bucket));
+	if (!str)
+		return (NULL);
+	while (bucket[++i])
+		str[j++] = bucket[i];
+	str[j] = '\0';
+	free (bucket);
+	return (str);
+
+}
+
+/*{
 	char	*new_bucket;
 	char	*n_pos;
 	size_t	size;
@@ -32,16 +57,15 @@ static char	*update_bucket(char *bucket)
 	n_pos = ft_strchr(bucket, '\n');
 	if (n_pos)
 	{
-		size = n_pos - bucket + 1;
-		free(n_pos);
+		size = ft_strlen(bucket) - (n_pos - bucket + 1);
+		new_bucket = ft_substr(n_pos + 1, 0, size);
+		return (new_bucket);
 	}
-	else
-		size = ft_strlen(bucket);
-	new_bucket = ft_substr(bucket, 0, size);
 	free(bucket);
-	return (new_bucket);
-}
-static char	*read_to_bucket(int fd, char *bucket)
+	return (NULL);
+}*/
+
+char	*read_to_bucket(int fd, char *bucket)
 {
 	char		*buf;
 	ssize_t		bytes_read;
@@ -73,23 +97,41 @@ static char	*read_to_bucket(int fd, char *bucket)
 /*
 Return a string which its last char is '\n' terminatted with '\0'
 */
-static char	*get_a_line(char *bucket)
+char	*get_a_line(char *bucket)
 {
+	int		i;
+	char	*str;
+
+	i = 0;
+	if (!bucket[i])
+		return (NULL);
+	while (bucket[i] && bucket[i] != '\n')
+		i++;
+	str = ft_calloc(i + 2, sizeof(char));
+	i = 0;
+	while (bucket[i] && bucket[i] != '\n')
+	{
+		str[i] = bucket[i];
+		i++;
+	}
+	if (bucket[i] && bucket[i] == '\n')
+		str[i++] = '\n';
+	return (str);
+
+}
+/*{
 	char	*line;
 	char	*n_pos;
 	size_t	size;
 
 	n_pos = ft_strchr(bucket, '\n');
-	if(n_pos)
-	{
+	if (n_pos)
 		size = n_pos - bucket + 1;
-		free(n_pos);
-	}
 	else
 		size = ft_strlen(bucket);
 	line = ft_substr(bucket, 0, size);
 	return (line);
-}
+}*/
 
 char	*get_next_line(int fd)
 {
