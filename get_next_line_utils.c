@@ -38,7 +38,7 @@ char	*ft_strchr(const char *s, int c)
 			return (str);
 		str++;
 	}
-	if (str == (char)c)
+	if (*str == (char)c)
 		return (str);
 	else
 		return (NULL);
@@ -60,7 +60,7 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 		return (malloc(sizeof(char)));
 	charleft = ft_strlen(&s[start]);
 	if (charleft > len)
-	charleft = len;
+		charleft = len;
 	sub = malloc((charleft + 1) * sizeof(char));
 	if (!sub)
 		return (NULL);
@@ -97,17 +97,25 @@ char	*ft_strjoin(char const *s1, char const *s2)
 }
 
 /*
-The function erases the data in the n bytes of the memory starting at the
-location pointed to by s, by writing zeros (bytes containing '\0') to that area
+Allocates memory with malloc and initialize with zeroes
 */
-void	*ft_bzero(void *s, size_t n)
+void	*ft_calloc(size_t nmemb, size_t size)
 {
-	unsigned char	*c;
+	void	*pointer;
+	size_t	total_bytes;
+	size_t	i;
 
-	c = s;
-	while (n)
+	total_bytes = nmemb * size;
+	if (!nmemb || !size || size != total_bytes / nmemb)
+		return (NULL);
+	pointer = malloc(total_bytes);
+	if (!pointer)
+		return (NULL);
+	i = 0;
+	while (i < total_bytes)
 	{
-		*c++ = '\0';
-		n--;
+		((unsigned char *)pointer)[i] = '\0';
+		i++;
 	}
+	return (pointer);
 }

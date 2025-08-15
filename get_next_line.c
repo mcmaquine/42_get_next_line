@@ -17,27 +17,31 @@ static char	*join(char *bucket, char *buf)
 	char	*jn;
 
 	jn = ft_strjoin(bucket, buf);
-	free(jn);
+	free(bucket);
+	return (jn);
 }
 
-static void	*ft_calloc(size_t nmemb, size_t size)
+static char	*update_bucket(char *bucket)
 {
-	void	*pointer;
-	size_t	total_bytes;
+	char	*new_bucket;
+	char	*n_pos;
+	size_t	size;
 
-	if (!nmemb || !size)
+	if (!bucket)
 		return (NULL);
-	total_bytes = nmemb * size;
-	if (size != total_bytes / nmemb)
-		return (NULL);
-	pointer = malloc(total_bytes);
-	if (!pointer)
-		return (NULL);
-	ft_bzero(pointer, total_bytes);
-	return (pointer);
+	n_pos = ft_strchr(bucket, '\n');
+	if (n_pos)
+	{
+		size = n_pos - bucket + 1;
+		free(n_pos);
+	}
+	else
+		size = ft_strlen(bucket);
+	new_bucket = ft_substr(bucket, 0, size);
+	free(bucket);
+	return (new_bucket);
 }
-
-static char	*update_bucket(int fd, char *bucket)
+static char	*read_to_bucket(int fd, char *bucket)
 {
 	char		*buf;
 	ssize_t		bytes_read;
@@ -69,29 +73,21 @@ static char	*update_bucket(int fd, char *bucket)
 /*
 Return a string which its last char is '\n' terminatted with '\0'
 */
-static char	*get_a_line(int fd, char **bucket)
+static char	*get_a_line(char *bucket)
 {
 	char	*line;
-	char	*new_btk;
-	ssize_t	pos;
+	char	*n_pos;
+	size_t	size;
 
-	pos = ft_strpchr(*btk, ft_strlen(*btk), 10);
-	if (pos == -1)
+	n_pos = ft_strchr(bucket, '\n');
+	if(n_pos)
 	{
-		line = ft_strdup
-		if (line)
-		{
-			free(*btk);
-			*btk = NULL;
-		}
+		size = n_pos - bucket + 1;
+		free(n_pos);
 	}
 	else
-	{
-		line = ft_substr(*btk, 0, pos + 1);
-		new_btk = ft_substr(*btk, pos + 1, ft_strlen(*btk) - (pos + 1));
-		free(*btk);
-		*btk = new_btk;
-	}
+		size = ft_strlen(bucket);
+	line = ft_substr(bucket, 0, size);
 	return (line);
 }
 
@@ -100,8 +96,12 @@ char	*get_next_line(int fd)
 	static char	*bucket;
 	char		*line;
 
-	if (fd < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	bucket = update_bucket(fd, bucket);
+	bucket = read_to_bucket(fd, bucket);
+	if (!bucket)
+		return (NULL);
+	line = get_a_line(bucket);
+	bucket = update_bucket(bucket);
 	return (line);
 }
