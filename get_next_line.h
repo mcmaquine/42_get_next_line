@@ -14,6 +14,9 @@
 # define GET_NEXT_LINE_H
 # include <stdlib.h>
 # include <unistd.h>
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1
+# endif
 
 char	*join(char *bucket, char *buf);
 char	*update_bucket(char *bucket);

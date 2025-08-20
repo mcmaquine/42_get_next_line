@@ -15,6 +15,9 @@
 # include <stdlib.h>
 # include <unistd.h>
 # define FD_MAX 1024
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1
+# endif
 
 char	*join(char *bucket, char *buf);
 char	*update_bucket(char *bucket);
