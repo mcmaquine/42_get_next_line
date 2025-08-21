@@ -6,7 +6,7 @@
 /*   By: mmaquine <mmaquine@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 17:47:05 by mmaquine          #+#    #+#             */
-/*   Updated: 2025/08/15 15:47:27 by mmaquine         ###   ########.fr       */
+/*   Updated: 2025/08/21 17:35:53 by mmaquine         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,19 +49,19 @@ char	*update_bucket(char *bucket)
 char	*read_to_bucket(int fd, char *bucket)
 {
 	char		*buf;
+	char		*n_pos;
 	ssize_t		bytes_read;
 
 	buf = (char *)ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!buf)
 		return (NULL);
-	if (!bucket)
-		bucket = (char *)ft_calloc(1, sizeof(char));
 	bytes_read = read(fd, buf, BUFFER_SIZE);
 	while (bytes_read > 0)
 	{
 		buf[bytes_read] = '\0';
 		bucket = join(bucket, buf);
-		if (ft_strchr(bucket, '\n'))
+		n_pos = ft_strchr(bucket, '\n');
+		if (n_pos)
 			break ;
 		bytes_read = read(fd, buf, BUFFER_SIZE);
 	}
@@ -100,6 +100,8 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
+	if (!bucket)
+		bucket = (char *)ft_calloc(1, sizeof(char));
 	bucket = read_to_bucket(fd, bucket);
 	if (!bucket)
 		return (NULL);
